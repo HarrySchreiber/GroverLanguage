@@ -8,5 +8,8 @@ from grove_parse import *
 from grove_lang import *
 
 if __name__ == "__main__":
-    # TODO: Implement your REPL here
-	pass
+    while(True):
+        root = parse(input("Grove>>"))
+        result = root.eval()
+        if(result != None):
+            print(result)

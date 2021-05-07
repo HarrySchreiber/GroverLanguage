@@ -26,8 +26,10 @@ class Stmt(Command):
 # -----------------------------------------------------------------------------
 
 class Num(Expr):
-	# TODO: Implement node for Number literals
-	pass
+    def __init__(self, val):
+        self.val = val
+    def eval(self):
+        return self.val
 
 class StringLiteral(Expr):
     # TODO: Implement node for String literals
@@ -42,8 +44,11 @@ class Call(Expr):
     pass
         
 class Addition(Expr):
-    # TODO: Implement node for "+"
-    pass
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def eval(self):
+        return self.left.eval() + self.right.eval()
 
 class Name(Expr):
     # TODO: Implement node for <Name> expressions
