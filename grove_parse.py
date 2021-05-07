@@ -18,6 +18,20 @@ def parse(s):
     check(len(remaining_tokens) == 0, "Expected end of command but found " + " ".join(remaining_tokens))    
     return root
 
+#TODO: Are these supposed to be in here?
+# Checking for integer        
+def is_int(s):
+    """ Takes a string and returns True if in can be converted to an integer """
+    try:
+        int(s)
+        return True
+    except Exception:
+        return False
+
+def is_expr(x):
+    if not isinstance(x, Expr):
+        check(False, "Expected expression but found " + str(type(x)))
+
 # -----------------------------------------------------------------------------
 # Implement the recursive parser for the Grove language
 # -----------------------------------------------------------------------------
@@ -31,6 +45,24 @@ def parse_tokens(tokens):
     check(len(tokens) > 0)
         
     start = tokens[0]
+
+    if is_int(start):
+        return Num(int(start)), tokens[1:]
+    elif start == '+':
+        check(len(tokens) >= 7)
+        expect(tokens[1], '(')
+        # recursively parse right expression
+        left, tokens = parse_tokens(tokens[2:])
+        is_expr(left)
+        expect(tokens[0], ')')
+        expect(tokens[1], '(')
+        # recursively parse right expression
+        right, tokens = parse_tokens(tokens[2:])
+        is_expr(right)
+        expect(tokens[0], ')')
+        return Addition(left, right), tokens[1:]
+    else:
+        check(False, "Unrecognized Command: " + start)
 
     # TODO: complete parser with cases for each possible type of command
 
