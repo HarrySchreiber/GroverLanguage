@@ -28,6 +28,11 @@ def is_int(s):
     except Exception:
         return False
 
+# Checking for string
+def is_str(s):
+    """ Takes a string and returns True if it is a string """
+    return s[0] == "\"" and s[len(s)-1] == "\""
+
 def is_expr(x):
     if not isinstance(x, Expr):
         check(False, "Expected expression but found " + str(type(x)))
@@ -48,6 +53,8 @@ def parse_tokens(tokens):
 
     if is_int(start):
         return Num(int(start)), tokens[1:]
+    elif is_str(start):
+        return StringLiteral(start[1:(len(start)-1)]), tokens[1:]
     elif start == '+':
         check(len(tokens) >= 7)
         expect(tokens[1], '(')

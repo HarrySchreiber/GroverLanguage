@@ -32,7 +32,10 @@ class Num(Expr):
         return self.val
 
 class StringLiteral(Expr):
-    # TODO: Implement node for String literals
+    def __init__(self,val):
+        self.val = val
+    def eval(self):
+        return self.val
     pass
 
 class Object(Expr):
