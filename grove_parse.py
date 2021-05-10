@@ -62,7 +62,7 @@ def parse_tokens(tokens):
         return Num(int(start)), tokens[1:]
     #"call" "(" <Name> <Name> <Expr>* ")"
     elif start == "call":
-        check(len(tokens >= 5))
+        check(len(tokens) >= 5)
         expect(tokens[1], '(')
         check(is_name(tokens[2]), "Expected name, got " + tokens[2])
         check(is_name(tokens[3]), "Expected name, got " + tokens[3])
@@ -104,8 +104,10 @@ def parse_tokens(tokens):
         is_expr(expr)
         return Assignment(name, expr), tokens
     elif start == 'new':
+        check(len(tokens) >= 2)
         return Object(tokens[1]), tokens[2:]
     elif start == 'import':
+        check(len(tokens) >= 2)
         return Import(tokens[1]), tokens[2:]
     elif start == 'quit' or start == 'exit':
         return Terminate(), tokens[1:]

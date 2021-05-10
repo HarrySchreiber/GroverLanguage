@@ -66,6 +66,15 @@ class Call(Expr):
 
     def eval(self):
         #TODO: figure out what goes here
+        if(self.name1 in globals()):
+            if(self.name2 in dir(name2)):
+                method = getattr(self.name1, self.name2)
+                return method(*args) 
+            else:
+                raise GroveError("GROVE: No method with name: " + self.name2)
+        else:
+            raise GroveError("GROVE: No Object with name: " + self.name1)
+
         pass
         
 class Addition(Expr):
