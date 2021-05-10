@@ -46,6 +46,11 @@ class Object(Expr):
         self.val = val
     def eval(self):
         try:
+
+            if("." not in self.val):
+                if self.val == "GroveError":
+                    return GroveError()
+
             parts = self.val.split(".")
             container = globals()[parts[0]]
 
