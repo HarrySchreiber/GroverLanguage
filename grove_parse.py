@@ -1,4 +1,5 @@
 from grove_lang import *
+import re
 
 # Utility methods for handling parse errors
 def check(condition, message = "Unexpected end of expression"):
@@ -32,6 +33,13 @@ def is_expr(x):
     if not isinstance(x, Expr):
         check(False, "Expected expression but found " + str(type(x)))
 
+def is_name(x):
+    pattern = r'[A-Za-z0-9_]'
+    if re.fullmatch(pattern, x) and x[0].isalpha():
+        return True
+
+    return False
+
 # -----------------------------------------------------------------------------
 # Implement the recursive parser for the Grove language
 # -----------------------------------------------------------------------------
@@ -48,6 +56,27 @@ def parse_tokens(tokens):
 
     if is_int(start):
         return Num(int(start)), tokens[1:]
+    #"call" "(" <Name> <Name> <Expr>* ")"
+    elif start == "call":
+        check(len(tokens >= 5))
+        expect(tokens[1], '(')
+        check(is_name(tokens[2]), "Expected name, got " + tokens[2])
+        check(is_name(tokens[3]), "Expected name, got " + tokens[3])
+        expList = []
+        endIndex = len(tokens)
+
+        for i in range(4, len(tokens)-1):
+            arg = tokens[i]
+            if arg == ")":
+                endIndex = i+1
+                break
+            val = parse_tokens([arg])[0]
+            check(is_expr(val), "Expected expression, got " + arg)
+            expList.append(val)
+
+        return Call(Name(tokens[2]), Name(tokens[3]), expList), tokens[endIndex:]
+
+
     elif start == '+':
         check(len(tokens) >= 7)
         expect(tokens[1], '(')
@@ -61,6 +90,8 @@ def parse_tokens(tokens):
         is_expr(right)
         expect(tokens[0], ')')
         return Addition(left, right), tokens[1:]
+    elif is_name(start):
+        return Name(start), tokens[1:]
     else:
         check(False, "Unrecognized Command: " + start)
 

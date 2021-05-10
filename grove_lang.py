@@ -41,7 +41,14 @@ class Object(Expr):
     
 class Call(Expr):
     # TODO: Implement node for "call" expression
-    pass
+    def __init__(self, name1, name2, args):
+        self.name1 = name1
+        self.name2 = name2
+        self.args = args
+
+    def eval(self):
+        #TODO: figure out what goes here
+        pass
         
 class Addition(Expr):
     def __init__(self, left, right):
@@ -51,8 +58,11 @@ class Addition(Expr):
         return self.left.eval() + self.right.eval()
 
 class Name(Expr):
-    # TODO: Implement node for <Name> expressions
-    pass
+    def __init__(self, val):
+        self.val
+
+    def eval(self):
+        return self.val
 
 class Assignment(Stmt):
 	# TODO: Implement node for "set" statements
