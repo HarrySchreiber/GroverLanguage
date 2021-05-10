@@ -9,7 +9,7 @@ from grove_lang import *
 
 if __name__ == "__main__":
     while(True):
-        root = parse(input("Grove>>"))
+        root = parse(input("Grove>> "))
         result = root.eval()
         if(result != None):
             print(result)
