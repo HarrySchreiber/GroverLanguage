@@ -40,7 +40,7 @@ def is_expr(x):
 
 def is_name(x):
     pattern = r'[A-Za-z0-9_]+'
-    if re.fullmatch(pattern, x) != None and x[0].isalpha():
+    if re.fullmatch(pattern, x) != None and (x[0].isalpha() or x[0] == "_"):
         return True
 
     return False
@@ -55,6 +55,7 @@ def parse_tokens(tokens):
          the remaining tokens)
     """
     check(len(tokens) > 0)
+
         
     start = tokens[0]
 
@@ -68,15 +69,27 @@ def parse_tokens(tokens):
         check(is_name(tokens[3]), "Expected name, got " + tokens[3])
         expList = []
         endIndex = len(tokens)
+        # keeps track of nested parenthesis
+        nested = 0
 
         for i in range(4, len(tokens)-1):
             arg = tokens[i]
             if arg == ")":
-                endIndex = i+1
-                break
-            val = parse_tokens([arg])[0]
-            check(is_expr(val), "Expected expression, got " + arg)
-            expList.append(val)
+                if nested == 0:
+                    endIndex = i + 1
+                    break
+                else:
+                    nested -= 1
+            elif arg == "(":
+                nested += 1
+            expList.append(arg)
+
+        if len(expList) > 0:
+            val, remain = parse_tokens(expList)
+            expList = [val.eval()]
+            while len(remain) > 0:
+                val, remain = parse_tokens(remain)
+                expList.append(val.eval())
 
         return Call(Name(tokens[2]), Name(tokens[3]), expList), tokens[endIndex:]
 

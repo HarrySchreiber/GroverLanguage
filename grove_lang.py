@@ -66,14 +66,14 @@ class Call(Expr):
 
     def eval(self):
         #TODO: figure out what goes here
-        if(self.name1 in globals()):
-            if(self.name2 in dir(name2)):
-                method = getattr(self.name1, self.name2)
-                return method(*args) 
+        if(self.name1 in globals() or str(self.name1) in var_table.keys()):
+            if(self.name2 in dir(self.name2) or str(self.name1) in var_table.keys()):
+                method = getattr(self.name1.eval(), str(self.name2))
+                return method(*self.args)
             else:
-                raise GroveError("GROVE: No method with name: " + self.name2)
+                raise GroveError("GROVE: No method with name: " + str(self.name2))
         else:
-            raise GroveError("GROVE: No Object with name: " + self.name1)
+            raise GroveError("GROVE: No Object with name: " + str(self.name1))
 
         pass
         
@@ -90,6 +90,9 @@ class Name(Expr):
         self.val = val
     def eval(self):
         return var_table[self.val]
+
+    def __str__(self):
+        return self.val
 
 class Assignment(Stmt):
 	# TODO: Implement node for "set" statements
