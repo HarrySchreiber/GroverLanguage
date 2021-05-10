@@ -58,7 +58,9 @@ def parse_tokens(tokens):
         
     start = tokens[0]
 
-    if is_int(start):
+    if start == "exit" or start == "quit":
+        sys.exit()
+    elif is_int(start):
         return Num(int(start)), tokens[1:]
     #"call" "(" <Name> <Name> <Expr>* ")"
     elif start == "call":
