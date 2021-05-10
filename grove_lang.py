@@ -5,6 +5,8 @@ import sys
 import importlib
 import builtins
 
+var_table = {}
+
 # The exception class from the notes.
 class GroveError(Exception):
     pass
@@ -40,7 +42,20 @@ class StringLiteral(Expr):
 
 class Object(Expr):
 	# TODO: Implement node for "new" expression
-    pass
+    def __init__(self, val):
+        self.val = val
+    def eval(self):
+        try:
+            parts = self.val.split(".")
+            container = globals()[parts[0]]
+
+            if isinstance(container, dict):
+                cls = container[parts[1]]
+            else:
+                cls = getattr(container, parts[1])
+            return cls()
+        except Exception:
+            raise GroveError("GROVE: No object with that module") 
     
 class Call(Expr):
     # TODO: Implement node for "call" expression
@@ -55,11 +70,20 @@ class Addition(Expr):
 
 class Name(Expr):
     # TODO: Implement node for <Name> expressions
-    pass
+    def __init__(self, val):
+        self.val = val
+    def eval(self):
+        return var_table[self.val]
 
 class Assignment(Stmt):
 	# TODO: Implement node for "set" statements
-	pass
+    def __init__(self, name, expr):
+        self.name = name
+        self.expr = expr
+    def eval(self):
+        val = self.expr.eval()
+        var_table[self.name.val] = val
+        return None
 
 class Import(Stmt):
     # TODO: Implement node for "import" statements

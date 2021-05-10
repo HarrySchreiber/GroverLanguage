@@ -29,7 +29,7 @@ def is_int(s):
         return False
 
 # Checking for string
-def is_str(s):
+def is_strlit(s):
     """ Takes a string and returns True if it is a string """
     return s[0] == "\"" and s[len(s)-1] == "\""
 
@@ -46,15 +46,12 @@ def parse_tokens(tokens):
         (an object representing the next part of the expression,
          the remaining tokens)
     """
-    
     check(len(tokens) > 0)
         
     start = tokens[0]
 
     if is_int(start):
         return Num(int(start)), tokens[1:]
-    elif is_str(start):
-        return StringLiteral(start[1:(len(start)-1)]), tokens[1:]
     elif start == '+':
         check(len(tokens) >= 7)
         expect(tokens[1], '(')
@@ -68,6 +65,21 @@ def parse_tokens(tokens):
         is_expr(right)
         expect(tokens[0], ')')
         return Addition(left, right), tokens[1:]
+    elif start == 'set':
+        check(len(tokens) >= 4)
+        check(tokens[1].isalpha(), "Invalid Name: " + tokens[1])
+        name = Name(tokens[1])
+        expect(tokens[2], '=')
+        # recursive match to parse expression
+        expr, tokens = parse_tokens(tokens[3:])
+        is_expr(expr)
+        return Assignment(name, expr), tokens
+    elif start == 'new':
+        return Object(tokens[1]), tokens[2:]
+    elif start.isalpha():
+        return Name(start), tokens[1:]
+    elif is_strlit(start):
+        return StringLiteral(start[1:(len(start)-1)]), tokens[1:]
     else:
         check(False, "Unrecognized Command: " + start)
 
@@ -77,4 +89,6 @@ def parse_tokens(tokens):
 # Informal Testing Code
 if __name__ == "__main__":
     # TODO: Add some tests to check if your parser works properly (Optional)
+    root = parse("set f = new __builtins__.list")
+    root.eval()
     pass

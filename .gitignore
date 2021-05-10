@@ -1,0 +1,5 @@
+*.txt
+__pycache__/
+run_tests.sh
+test_suite/
+check_errors.py
