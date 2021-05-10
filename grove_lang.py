@@ -98,7 +98,11 @@ class Import(Stmt):
 
 class Terminate(Stmt):
 	# TODO: Implement node for "quit" and "exit" statements
-	pass
+    def __init__(self, val):
+        self.val = val
+    def eval(self):
+        if "quit" in self.val or "exit" in self.val:
+            sys.exit()
         
 
 # Informal Testing Code
