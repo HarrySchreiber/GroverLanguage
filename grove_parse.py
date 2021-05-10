@@ -39,8 +39,8 @@ def is_expr(x):
         check(False, "Expected expression but found " + str(type(x)))
 
 def is_name(x):
-    pattern = r'[A-Za-z0-9_]'
-    if re.fullmatch(pattern, x) and x[0].isalpha():
+    pattern = r'[A-Za-z0-9_]+'
+    if re.fullmatch(pattern, x) != None and x[0].isalpha():
         return True
 
     return False
@@ -58,9 +58,7 @@ def parse_tokens(tokens):
         
     start = tokens[0]
 
-    if start == "exit" or start == "quit":
-        sys.exit()
-    elif is_int(start):
+    if is_int(start):
         return Num(int(start)), tokens[1:]
     #"call" "(" <Name> <Name> <Expr>* ")"
     elif start == "call":
@@ -98,7 +96,7 @@ def parse_tokens(tokens):
         return Addition(left, right), tokens[1:]
     elif start == 'set':
         check(len(tokens) >= 4)
-        check(tokens[1].isalpha(), "Invalid Name: " + tokens[1])
+        check(is_name(tokens[1]), "Invalid Name: " + tokens[1])
         name = Name(tokens[1])
         expect(tokens[2], '=')
         # recursive match to parse expression
@@ -109,6 +107,8 @@ def parse_tokens(tokens):
         return Object(tokens[1]), tokens[2:]
     elif start == 'import':
         return Import(tokens[1]), tokens[2:]
+    elif start == 'quit' or start == 'exit':
+        return Terminate(), tokens[1:]
     elif is_name(start):
         return Name(start), tokens[1:]
     elif is_strlit(start):
@@ -122,6 +122,7 @@ def parse_tokens(tokens):
 # Informal Testing Code
 if __name__ == "__main__":
     # TODO: Add some tests to check if your parser works properly (Optional)
-    root = parse("set f = new __builtins__.list")
-    root.eval()
+    # root = parse("set f = new __builtins__.list")
+    # root.eval()
+    print(is_name("ab"))
     pass
