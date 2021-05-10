@@ -87,9 +87,11 @@ def parse_tokens(tokens):
 
         if len(expList) > 0:
             val, remain = parse_tokens(expList)
+            is_expr(val)
             expList = [val.eval()]
             while len(remain) > 0:
                 val, remain = parse_tokens(remain)
+                is_expr(val)
                 expList.append(val.eval())
 
         return Call(Name(tokens[2]), Name(tokens[3]), expList), tokens[endIndex:]
