@@ -32,7 +32,8 @@ def is_int(s):
 # Checking for string
 def is_strlit(s):
     """ Takes a string and returns True if it is a string """
-    return s[0] == "\"" and s[len(s)-1] == "\""
+
+    return (s[0] == "\"" and s[len(s)-1] == "\"") and s.count("\"") == 2
 
 def is_expr(x):
     if not isinstance(x, Expr):

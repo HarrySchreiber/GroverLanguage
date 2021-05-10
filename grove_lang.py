@@ -73,28 +73,35 @@ class Call(Expr):
         #TODO: figure out what goes here
         if(self.name1 in globals() or str(self.name1) in var_table.keys()):
             if(self.name2 in dir(self.name2) or str(self.name1) in var_table.keys()):
-                method = getattr(self.name1.eval(), str(self.name2))
-                return method(*self.args)
+                try:
+                    method = getattr(self.name1.eval(), str(self.name2))
+                    return method(*self.args)
+                except:
+                    raise GroveError("GROVE: No method with name: " + str(self.name2))
             else:
                 raise GroveError("GROVE: No method with name: " + str(self.name2))
         else:
             raise GroveError("GROVE: No Object with name: " + str(self.name1))
-
-        pass
         
 class Addition(Expr):
     def __init__(self, left, right):
         self.left = left
         self.right = right
     def eval(self):
-        return self.left.eval() + self.right.eval()
+        if type(self.left.eval()) == type(self.right.eval()):
+            return self.left.eval() + self.right.eval()
+        else:
+            raise GroveError("Grove: Addition must be between values of the same type")
 
 class Name(Expr):
     # TODO: Implement node for <Name> expressions
     def __init__(self, val):
         self.val = val
     def eval(self):
-        return var_table[self.val]
+        if(self.val in var_table):
+            return var_table[self.val]
+        else:
+            raise GroveError("GROVE: No Value for variable with name: " + self.val)
 
     def __str__(self):
         return self.val
