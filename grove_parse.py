@@ -105,6 +105,8 @@ def parse_tokens(tokens):
         return Assignment(name, expr), tokens
     elif start == 'new':
         return Object(tokens[1]), tokens[2:]
+    elif start == 'import':
+        return Import(tokens[1]), tokens[2:]
     elif is_name(start):
         return Name(start), tokens[1:]
     elif is_strlit(start):

@@ -93,8 +93,15 @@ class Assignment(Stmt):
         return None
 
 class Import(Stmt):
-    # TODO: Implement node for "import" statements
-    pass
+    def __init__(self, val):
+        self.val = val
+    def eval(self):
+        try:
+            lib = importlib.import_module(self.val)
+            globals()[self.val] = lib
+        except(Exception):
+            raise GroveError("GROVE: No module with name: " + self.val)
+        return None
 
 class Terminate(Stmt):
 	# TODO: Implement node for "quit" and "exit" statements
